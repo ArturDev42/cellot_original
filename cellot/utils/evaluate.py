@@ -283,6 +283,15 @@ def load_conditions(expdir, where, setting, embedding=None):
     control, treated, to_pushfwd, obs, model_kwargs = load_all_inputs(
         config, setting, embedding, where
     )
+    
+    control = anndata.AnnData(control, obs=obs.loc[control.index])
+    outdir = '/Users/arturdox/coding/mlbiolab/cellot_original/results/scrna-sciplex3/drug-trametinib/model-scgen/evals_iid_data_space/control.h5ad'
+    control.write_h5ad(outdir)
+    
+    treated_ada = anndata.AnnData(treated, obs=obs.loc[treated.index])
+    outdir = '/Users/arturdox/coding/mlbiolab/cellot_original/results/scrna-sciplex3/drug-trametinib/model-scgen/evals_iid_data_space/treated.h5ad'
+    treated_ada.write_h5ad(outdir)
+    
     if config.model.name != "cellot" and embedding == "ae" and where == "latent_space":
         control = encode(control)
         treated = encode(treated)

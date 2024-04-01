@@ -18,4 +18,4 @@ training:
   cache_freq: 10000
   eval_freq: 2500
   logs_freq: 250
-  n_iters: 250000
+  n_iters: 10000

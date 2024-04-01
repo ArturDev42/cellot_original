@@ -107,6 +107,28 @@ def main(argv):
 
     outdir.mkdir(exist_ok=True, parents=True)
 
+
+    assert (expdir / 'config.yaml').exists()
+    config = load_config(expdir / 'config.yaml')
+    if 'ae_emb' in config.data:
+        assert config.model.name == 'cellot'
+        config.data.ae_emb.path = str(expdir.parent / 'model-scgen')
+    cache = outdir / 'imputed.h5ad'
+
+    _, treateddf, imputed = load_conditions(
+            expdir, where, setting, embedding=embedding)
+
+    imputed.write(cache)
+    imputeddf = imputed.to_df()
+
+    print(imputeddf)
+    print(treateddf)
+
+    imputeddf.columns = imputeddf.columns.astype(str)
+    treateddf.columns = treateddf.columns.astype(str)
+
+    assert imputeddf.columns.equals(treateddf.columns)
+
     def iterate_feature_slices():
 
         assert (expdir / 'config.yaml').exists()
@@ -122,10 +144,15 @@ def main(argv):
         imputed.write(cache)
         imputeddf = imputed.to_df()
 
+        print(imputeddf)
+        print(treateddf)
+
         imputeddf.columns = imputeddf.columns.astype(str)
         treateddf.columns = treateddf.columns.astype(str)
 
         assert imputeddf.columns.equals(treateddf.columns)
+
+        exit()
 
         def load_markers():
             data = read_single_anndata(config, path=None)
@@ -171,6 +198,7 @@ def main(argv):
                     imp = imputeddf.sample(ncells)
                     yield ncells, 'all', trt, imp
 
+    exit()
     evals = pd.DataFrame(
             compute_evaluations(iterate_feature_slices()),
             columns=['ncells', 'nfeatures', 'metric', 'value']
