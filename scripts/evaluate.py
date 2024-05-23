@@ -67,6 +67,8 @@ def compute_evaluations(iterator):
 
         yield ncells, nfeatures, 'l2-means', np.linalg.norm(mut - mui)
         yield ncells, nfeatures, 'l2-stds', np.linalg.norm(stdt - stdi)
+        # pd.Series.corr != R2??
+        # https://stackoverflow.com/questions/65699008/how-can-i-calculate-r-square-in-pandas-dataframe-elegantly
         yield ncells, nfeatures, 'r2-means', pd.Series.corr(mut, mui)
         yield ncells, nfeatures, 'r2-stds', pd.Series.corr(stdt, stdi)
         yield ncells, nfeatures, 'r2-pairwise_feat_corrs', pd.Series.corr(pwct, pwci)
